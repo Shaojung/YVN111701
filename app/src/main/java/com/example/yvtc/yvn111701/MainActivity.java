@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Bitmap doInBackground(String... params) {
-
-
             try {
                 URL url = new URL(params[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -82,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
                     readAllSize += readSize;
                     sum = (readAllSize / fullSize) * 100; // 累計讀取進度
                     publishProgress((int) sum);
+                    if (this.isCancelled())
+                    {
+                        return null;
+                    }
                     // Message message = handler.obtainMessage(1, sum);
                     // handler.sendMessage(message);
                 }
@@ -95,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
             byte[] result = outputStream.toByteArray();
             bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
             return bitmap;
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            tv.setText("使用者已取消");
         }
 
         @Override
