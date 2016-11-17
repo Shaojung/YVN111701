@@ -1,5 +1,6 @@
 package com.example.yvtc.yvn111701;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -20,12 +21,17 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
     ImageView img;
     TextView tv;
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         img = (ImageView) findViewById(R.id.imageView);
         tv = (TextView) findViewById(R.id.textView);
+        pd = new ProgressDialog(MainActivity.this);
+        pd.setTitle("下載中...");
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
     }
     public void click1(View v)
     {
@@ -38,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
         private Bitmap bitmap = null;
         private InputStream inputStream = null;
         private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.show();
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
 
@@ -78,11 +91,13 @@ public class MainActivity extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             tv.setText(String.valueOf(values[0]));
+            pd.setProgress(values[0]);
         }
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            pd.dismiss();
             img.setImageBitmap(bitmap);
         }
     }
