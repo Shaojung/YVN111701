@@ -1,6 +1,7 @@
 package com.example.yvtc.yvn111701;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView img;
     TextView tv;
     ProgressDialog pd;
+    MyTask task;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +33,19 @@ public class MainActivity extends AppCompatActivity {
         pd = new ProgressDialog(MainActivity.this);
         pd.setTitle("下載中...");
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                task.cancel(false);
+            }
+        });
+
 
     }
     public void click1(View v)
     {
-        MyTask task = new MyTask();
+        task = new MyTask();
         task.execute("http://www.drodd.com/images14/flower26.jpg");
     }
 
