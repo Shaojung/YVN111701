@@ -34,10 +34,18 @@ public class MainActivity extends AppCompatActivity {
         pd.setTitle("下載中...");
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.setCanceledOnTouchOutside(false);
+
         pd.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 task.cancel(false);
+            }
+        });
+        pd.setButton(DialogInterface.BUTTON_NEUTRAL, "暫停", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                task.isPause = ! task.isPause;
+
             }
         });
 
@@ -54,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         private Bitmap bitmap = null;
         private InputStream inputStream = null;
         private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        public boolean isPause = false;
 
         @Override
         protected void onPreExecute() {
@@ -84,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
                     {
                         return null;
                     }
+                    while (isPause)
+                    {
+                        Thread.sleep(500);
+                    }
                     // Message message = handler.obtainMessage(1, sum);
                     // handler.sendMessage(message);
                 }
@@ -92,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (MalformedURLException e) {
 
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             byte[] result = outputStream.toByteArray();
